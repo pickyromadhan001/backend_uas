@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->string('customer_name');
-            $table->string('alamat');
-            $table->string('no_hp');
-            $table->timestamps();
-        });
+       Schema::create('courses', function (Blueprint $table) {
+    $table->ulid('course_id')->primary();
+    $table->string('name');
+    $table->string('code');
+    $table->string('credits');
+    $table->string('semester');
+    $table->timestamps();
+});
+
     }
 
     /**
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer');
+        Schema::dropIfExists('courses');
     }
 };
