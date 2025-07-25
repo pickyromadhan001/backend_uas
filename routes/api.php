@@ -25,11 +25,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // });
 
     Route::apiResource('user', UserController::class);   
+    
 Route::apiResource('students', StudentController::class);
 Route::apiResource('courses', CourseController::class);
 Route::apiResource('lecturers', LecturerController::class);
 Route::apiResource('enrollments', EnrollmentController::class);
 Route::apiResource('course-lecturers', CourseLecturerController::class);
+
+// 📊 Dashboard Count
+Route::get('/dashboard-count', function () {
+    return response()->json([
+        'students' => \App\Models\Student::count(),
+        'courses' => \App\Models\Course::count(),
+        'lecturers' => \App\Models\Lecturer::count(),
+        'enrollments' => \App\Models\Enrollment::count(),
+        'course-lecturers' => \App\Models\CourseLecturer::count(),
+       
+    ]);
+});
 
    
 });

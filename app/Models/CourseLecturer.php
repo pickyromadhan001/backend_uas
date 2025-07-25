@@ -12,27 +12,26 @@ class CourseLecturer extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['course_id', 'lecturer_id', 'role']; // Hapus 'id' dari fillable
+    protected $fillable = ['course_id', 'lecturer_id', 'role'];
 
-    // Auto-generate UUID untuk id
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
             if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
+                $model->id = (string) Str::ulid();
             }
         });
     }
 
     public function course()
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(Course::class, 'course_id', 'course_id');
     }
 
     public function lecturer()
     {
-        return $this->belongsTo(Lecturer::class, 'lecturer_id');
+        return $this->belongsTo(Lecturer::class, 'lecturer_id', 'lecturer_id');
     }
 }

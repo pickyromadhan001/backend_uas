@@ -11,27 +11,28 @@ class Course extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['name', 'code', 'credits', 'semester']; // course_id dihapus dari fillable
+    protected $fillable = [
+        'name', 'code', 'credits', 'semester'
+    ];
 
-    // Generate UUID untuk course_id
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
             if (empty($model->course_id)) {
-                $model->course_id = (string) Str::uuid();
+                $model->course_id = (string) Str::ulid();
             }
         });
     }
 
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class, 'course_id'); // Ubah ke hasMany
+        return $this->hasMany(Enrollment::class, 'course_id', 'course_id');
     }
 
     public function courseLecturers()
     {
-        return $this->hasMany(CourseLecturer::class, 'course_id'); // Ubah ke hasMany
+        return $this->hasMany(CourseLecturer::class, 'course_id', 'course_id');
     }
 }

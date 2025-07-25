@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
 {
-    // Tampilkan semua data enrollment dengan relasi
     public function index()
     {
         return response()->json(
@@ -16,17 +15,15 @@ class EnrollmentController extends Controller
         );
     }
 
-    // Tampilkan satu data enrollment berdasarkan ID
     public function show($id)
     {
         $enrollment = Enrollment::with(['student', 'course'])->find($id);
         if (!$enrollment) {
             return response()->json(['message' => 'Enrollment not found'], 404);
         }
-        return response()->json($enrollment);
+        return response()->json($enrollment, 200);
     }
 
-    // Simpan data baru (tanpa input enrollment_id)
     public function store(Request $request)
     {
         $request->validate([
@@ -42,7 +39,6 @@ class EnrollmentController extends Controller
         return response()->json($enrollment, 201);
     }
 
-    // Update data
     public function update(Request $request, $id)
     {
         $enrollment = Enrollment::find($id);
@@ -60,10 +56,9 @@ class EnrollmentController extends Controller
 
         $enrollment->update($request->all());
 
-        return response()->json($enrollment);
+        return response()->json($enrollment, 200);
     }
 
-    // Hapus data
     public function destroy($id)
     {
         $enrollment = Enrollment::find($id);
@@ -73,6 +68,6 @@ class EnrollmentController extends Controller
 
         $enrollment->delete();
 
-        return response()->json(['message' => 'Enrollment deleted']);
+        return response()->json(['message' => 'Enrollment deleted'], 200);
     }
 }

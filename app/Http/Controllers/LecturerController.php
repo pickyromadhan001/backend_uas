@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lecturer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str; // untuk generate ID
+use Illuminate\Support\Str;
 
 class LecturerController extends Controller
 {
@@ -34,18 +34,25 @@ class LecturerController extends Controller
             'email' => 'required|email|unique:lecturers,email',
         ]);
 
-        // Generate unique lecturer_id (misal UUID)
-        $lecturerId = (string) Str::uuid();
+        try {
+            $lecturerId = (string) Str::ulid();
 
-        $lecturer = Lecturer::create([
-            'lecturer_id' => $lecturerId,
-            'name' => $request->name,
-            'NIP' => $request->NIP,
-            'department' => $request->department,
-            'email' => $request->email,
-        ]);
+            $lecturer = Lecturer::create([
+                'lecturer_id' => $lecturerId,
+                'name' => $request->name,
+                'NIP' => $request->NIP,
+                'department' => $request->department,
+                'email' => $request->email,
+            ]);
 
-        return response()->json($lecturer, 201);
+            return response()->json($lecturer, 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create lecturer',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // Update existing lecturer
@@ -56,7 +63,6 @@ class LecturerController extends Controller
             return response()->json(['message' => 'Lecturer not found'], 404);
         }
 
-        // Validasi unik email dan NIP kecuali pada record yang sedang diupdate
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'NIP' => 'sometimes|required|string|unique:lecturers,NIP,' . $id . ',lecturer_id',
@@ -64,9 +70,15 @@ class LecturerController extends Controller
             'email' => 'sometimes|required|email|unique:lecturers,email,' . $id . ',lecturer_id',
         ]);
 
-        $lecturer->update($request->all());
-
-        return response()->json($lecturer, 200);
+        try {
+            $lecturer->update($request->all());
+            return response()->json($lecturer, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update lecturer',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // Delete lecturer
@@ -77,8 +89,14 @@ class LecturerController extends Controller
             return response()->json(['message' => 'Lecturer not found'], 404);
         }
 
-        $lecturer->delete();
-
-        return response()->json(['message' => 'Lecturer deleted'], 200);
+        try {
+            $lecturer->delete();
+            return response()->json(['message' => 'Lecturer deleted'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete lecturer',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

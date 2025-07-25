@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Lecturer extends Model
 {
@@ -11,12 +12,22 @@ class Lecturer extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'lecturer_id',
         'name',
         'NIP',
         'department',
         'email',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->lecturer_id)) {
+                $model->lecturer_id = (string) Str::ulid();
+            }
+        });
+    }
 
     // Seorang dosen bisa mengajar banyak courseLecturers
     public function courseLecturers()

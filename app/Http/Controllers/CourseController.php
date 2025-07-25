@@ -7,27 +7,23 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    // Get all courses
     public function index()
     {
         return response()->json(Course::all(), 200);
     }
 
-    // Get single course
     public function show($id)
     {
         $course = Course::find($id);
         if (!$course) {
             return response()->json(['message' => 'Course not found'], 404);
         }
-        return response()->json($course);
+        return response()->json($course, 200);
     }
 
-    // Store course (tanpa input course_id)
     public function store(Request $request)
     {
         $request->validate([
-            // 'course_id' => 'required|unique:courses', // HAPUS ini
             'name' => 'required|string|max:100',
             'code' => 'required|string|max:20',
             'credits' => 'required|integer',
@@ -38,7 +34,6 @@ class CourseController extends Controller
         return response()->json($course, 201);
     }
 
-    // Update course
     public function update(Request $request, $id)
     {
         $course = Course::find($id);
@@ -54,10 +49,9 @@ class CourseController extends Controller
         ]);
 
         $course->update($request->all());
-        return response()->json($course);
+        return response()->json($course, 200);
     }
 
-    // Delete course
     public function destroy($id)
     {
         $course = Course::find($id);
@@ -66,6 +60,6 @@ class CourseController extends Controller
         }
 
         $course->delete();
-        return response()->json(['message' => 'Course deleted']);
+        return response()->json(['message' => 'Course deleted'], 200);
     }
 }

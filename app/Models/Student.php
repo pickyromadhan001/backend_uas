@@ -13,14 +13,13 @@ class Student extends Model
 
     protected $fillable = ['name', 'email', 'NIM', 'major', 'enrollment_year'];
 
-    // Auto-generate ID saat membuat model
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
             if (empty($model->student_id)) {
-                $model->student_id = (string) Str::uuid(); // atau bisa pakai custom format
+                $model->student_id = (string) Str::ulid();
             }
         });
     }
@@ -30,4 +29,3 @@ class Student extends Model
         return $this->hasMany(Enrollment::class, 'student_id');
     }
 }
-
